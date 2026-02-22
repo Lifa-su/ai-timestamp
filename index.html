@@ -3,219 +3,181 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI Timestamp — Unix Timestamp Converter</title>
-<meta name="description" content="Convert Unix timestamps, view multiple timezones, calculate date differences, and create countdowns.">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⏱️</text></svg>">
+<title>AI Timestamp - Unix Timestamp Converter</title>
+<meta name="description" content="Convert Unix timestamps to human-readable dates and vice versa. Multi-timezone support, real-time clock, and relative time calculator.">
 <style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{--bg:#0a0a0f;--s1:#12121a;--s2:#1a1a2e;--s3:#222240;--bd:#2a2a4a;--t1:#e0e0f0;--t2:#8888aa;--ac:#6c5ce7;--ac2:#a29bfe;--gn:#00cec9;--og:#fdcb6e;--r:12px;--rs:8px}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--t1);min-height:100vh;line-height:1.6}
-.wrap{max-width:960px;margin:0 auto;padding:20px 16px 60px}
-header{text-align:center;padding:40px 0 30px}
-header h1{font-size:2rem;font-weight:700;background:linear-gradient(135deg,var(--ac2),var(--gn));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-header p{color:var(--t2);margin-top:6px;font-size:.95rem}
-.clock{background:linear-gradient(135deg,var(--s2),var(--s3));border:1px solid var(--bd);border-radius:var(--r);padding:24px;text-align:center;margin-bottom:28px;position:relative;overflow:hidden}
-.clock::before{content:'';position:absolute;inset:-50%;background:conic-gradient(from 0deg,transparent,rgba(108,92,231,.15),transparent);animation:sp 8s linear infinite}
-@keyframes sp{to{transform:rotate(360deg)}}
-.clock .in{position:relative;z-index:1}
-.clock .ts{font-size:2.2rem;font-weight:700;font-family:'SF Mono',Monaco,Consolas,monospace;color:var(--gn);letter-spacing:1px}
-.clock .dt{color:var(--t2);margin-top:4px;font-size:.9rem}
-.clock label{display:block;font-size:.75rem;text-transform:uppercase;letter-spacing:2px;color:var(--t2);margin-bottom:8px}
-.card{background:var(--s1);border:1px solid var(--bd);border-radius:var(--r);padding:24px;margin-bottom:20px;transition:border-color .2s}
-.card:hover{border-color:var(--ac)}
-.card h2{font-size:1.15rem;font-weight:600;margin-bottom:16px;display:flex;align-items:center;gap:8px}
-.row{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap}
-input[type="text"],input[type="number"],input[type="datetime-local"],select{background:var(--s2);border:1px solid var(--bd);color:var(--t1);padding:10px 14px;border-radius:var(--rs);outline:none;flex:1;min-width:0;transition:border-color .2s}
-input:focus,select:focus{border-color:var(--ac)}
-::-webkit-calendar-picker-indicator{filter:invert(1)}
-button{background:linear-gradient(135deg,var(--ac),#7c6cf0);color:#fff;border:none;padding:10px 20px;border-radius:var(--rs);cursor:pointer;font-weight:600;transition:transform .1s,box-shadow .2s;white-space:nowrap}
-button:hover{transform:translateY(-1px);box-shadow:0 4px 15px rgba(108,92,231,.3)}
-button:active{transform:translateY(0)}
-.res{background:var(--s2);border:1px solid var(--bd);border-radius:var(--rs);padding:14px;margin-top:12px;font-family:'SF Mono',Monaco,Consolas,monospace;font-size:.9rem;word-break:break-all;display:none}
-.res.on{display:block;animation:fi .3s ease}
-@keyframes fi{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
-.res .lb{font-size:.75rem;color:var(--t2);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;font-family:inherit}
-.res .v{color:var(--ac2)}.res .v.g{color:var(--gn)}.res .v.o{color:var(--og)}
-.tzg{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px;margin-top:12px}
-.tz{background:var(--s2);border:1px solid var(--bd);border-radius:var(--rs);padding:12px;transition:border-color .2s}
-.tz:hover{border-color:var(--ac)}
-.tz .n{font-size:.75rem;color:var(--t2);text-transform:uppercase;letter-spacing:1px}
-.tz .t{font-size:1.1rem;font-weight:600;margin-top:2px;font-family:'SF Mono',Monaco,Consolas,monospace}
-.tz .d{font-size:.8rem;color:var(--t2);margin-top:1px}
-.tz .o{font-size:.75rem;color:var(--ac2);margin-top:2px}
-.cdg{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:14px}
-.cdu{text-align:center;background:var(--s2);border:1px solid var(--bd);border-radius:var(--rs);padding:14px 8px}
-.cdu .num{font-size:2rem;font-weight:700;font-family:'SF Mono',Monaco,Consolas,monospace;color:var(--gn)}
-.cdu .lbl{font-size:.7rem;color:var(--t2);text-transform:uppercase;letter-spacing:1px;margin-top:2px}
-footer{text-align:center;padding:30px 0 10px;color:var(--t2);font-size:.8rem}
-@media(max-width:600px){header h1{font-size:1.5rem}.clock .ts{font-size:1.5rem}.cdg{grid-template-columns:repeat(2,1fr)}.cdu .num{font-size:1.4rem}.row{flex-direction:column}.tzg{grid-template-columns:1fr}}
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#1a1a2e;--card:#16213e;--accent:#0f3460;--hi:#e94560;--text:#eee;--muted:#8892b0;--border:#233554;--ibg:#0d1b2a;--r:12px}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.6}
+.wrap{max-width:900px;margin:0 auto;padding:20px 16px 60px}
+header{text-align:center;padding:32px 0 24px}
+h1{font-size:1.8rem;font-weight:700;background:linear-gradient(135deg,var(--hi),#ff6b6b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+header p{color:var(--muted);font-size:.95rem;margin-top:4px}
+.clock{text-align:center;margin-bottom:28px;padding:20px;background:var(--card);border-radius:var(--r);border:1px solid var(--border)}
+.clock .ts{font-size:2.2rem;font-weight:700;font-family:'SF Mono',SFMono-Regular,Consolas,monospace;color:var(--hi);letter-spacing:1px}
+.clock .dt{color:var(--muted);font-size:.9rem;margin-top:6px}
+.card{background:var(--card);border-radius:var(--r);border:1px solid var(--border);padding:24px;margin-bottom:20px}
+.card h2{font-size:1.1rem;font-weight:600;margin-bottom:16px}
+.row{display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap}
+.f{flex:1;min-width:180px}
+.f label{display:block;font-size:.8rem;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px}
+input,select{width:100%;padding:10px 14px;background:var(--ibg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:.95rem;outline:none;transition:border .2s}
+input:focus,select:focus{border-color:var(--hi)}
+select{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%238892b0' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center}
+select option{background:var(--ibg);color:var(--text)}
+button{padding:10px 20px;background:var(--hi);color:#fff;border:none;border-radius:8px;font-size:.9rem;font-weight:600;cursor:pointer;transition:opacity .2s;white-space:nowrap}
+button:hover{opacity:.85}
+button:active{transform:scale(.97)}
+.res{margin-top:16px;padding:14px;background:var(--ibg);border-radius:8px;border:1px solid var(--border);font-family:'SF Mono',SFMono-Regular,Consolas,monospace;font-size:.9rem;word-break:break-all;display:none}
+.res.show{display:block}
+.res .lb{font-size:.75rem;color:var(--muted);text-transform:uppercase;margin-bottom:4px;font-family:-apple-system,sans-serif}
+.res .val{color:#7bed9f;font-size:1rem}
+.cp{float:right;padding:2px 10px;font-size:.75rem;background:var(--accent);border-radius:4px;cursor:pointer;border:none;color:var(--text)}
+.cp:hover{background:var(--hi)}
+.tzg{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px;margin-top:12px}
+.tzi{padding:10px 14px;background:var(--ibg);border-radius:8px;border:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.tzi .n{font-size:.8rem;color:var(--muted)}
+.tzi .t{font-family:'SF Mono',Consolas,monospace;font-size:.9rem}
+footer{text-align:center;padding:32px 0 16px;color:var(--muted);font-size:.8rem}
+footer a{color:var(--hi);text-decoration:none}
+@media(max-width:600px){
+h1{font-size:1.4rem}
+.clock .ts{font-size:1.6rem}
+.row{flex-direction:column}
+.f{min-width:100%}
+.tzg{grid-template-columns:1fr}
+.wrap{padding:12px 12px 50px}
+.card{padding:16px}
+}
 </style>
 </head>
 <body>
 <div class="wrap">
-<header><h1>⏱️ AI Timestamp</h1><p>Unix timestamp converter, timezone viewer, date calculator &amp; countdown</p></header>
+<header><h1>AI Timestamp</h1><p>Unix Timestamp Converter &amp; Time Tools</p></header>
 
-<div class="clock"><div class="in">
-  <label>Current Unix Timestamp</label>
-  <div class="ts" id="liveTs">&mdash;</div>
-  <div class="dt" id="liveDt">&mdash;</div>
-</div></div>
-
-<div class="card"><h2><span>🔄</span> Timestamp Converter</h2>
-  <div class="row"><input type="text" id="tsIn" placeholder="Enter Unix timestamp (e.g. 1740000000)"><button onclick="ts2date()">To Date</button></div>
-  <div class="row"><input type="datetime-local" id="dtIn" step="1"><button onclick="date2ts()">To Timestamp</button></div>
-  <div class="res" id="convRes"></div>
+<div class="clock">
+<div class="ts" id="lts"></div>
+<div class="dt" id="ldt"></div>
 </div>
 
-<div class="card"><h2><span>🌍</span> World Timezones</h2>
-  <p style="color:var(--t2);font-size:.85rem;margin-bottom:4px">Current time across 10 major timezones</p>
-  <div class="tzg" id="tzGrid"></div>
+<div class="card">
+<h2>&#128260; Timestamp &rarr; Date</h2>
+<div class="row">
+<div class="f"><label>Unix Timestamp</label><input type="number" id="tsi" placeholder="e.g. 1708646400"></div>
+<div style="flex:0 0 auto"><button onclick="t2d()">Convert</button></div>
+</div>
+<div class="res" id="t2dr"><button class="cp" onclick="cc('t2dv')">Copy</button><div class="lb">Result</div><div class="val" id="t2dv"></div></div>
 </div>
 
-<div class="card"><h2><span>📅</span> Date Calculator</h2>
-  <div class="row">
-    <input type="datetime-local" id="d1" step="1">
-    <span style="align-self:center;color:var(--t2)">&rarr;</span>
-    <input type="datetime-local" id="d2" step="1">
-    <button onclick="calcDiff()">Calculate</button>
-  </div>
-  <div class="res" id="diffRes"></div>
+<div class="card">
+<h2>&#128197; Date &rarr; Timestamp</h2>
+<div class="row">
+<div class="f"><label>Date &amp; Time</label><input type="datetime-local" id="dti" step="1"></div>
+<div style="flex:0 0 auto"><button onclick="d2t()">Convert</button></div>
+</div>
+<div class="res" id="d2tr"><button class="cp" onclick="cc('d2tv')">Copy</button><div class="lb">Unix Timestamp</div><div class="val" id="d2tv"></div></div>
 </div>
 
-<div class="card"><h2><span>⏳</span> Countdown Generator</h2>
-  <div class="row">
-    <input type="text" id="cdName" placeholder="Event name (e.g. New Year 2027)">
-    <input type="datetime-local" id="cdTarget" step="1">
-    <button onclick="startCd()">Start Countdown</button>
-  </div>
-  <div id="cdArea"></div>
+<div class="card">
+<h2>&#127760; Multi-Timezone View</h2>
+<div class="row" style="margin-bottom:12px">
+<div class="f"><label>Timestamp (empty = now)</label><input type="number" id="tzi" placeholder="Leave empty for current time"></div>
+<div style="flex:0 0 auto"><button onclick="showTz()">Show</button></div>
+</div>
+<div class="tzg" id="tzg"></div>
 </div>
 
-<footer>&copy; 2026 AI Timestamp &mdash; Free online timestamp tools</footer>
+<div class="card">
+<h2>&#9202; Relative Time Calculator</h2>
+<div class="row">
+<div class="f"><label>Amount</label><input type="number" id="ramt" placeholder="e.g. 7" min="0"></div>
+<div class="f"><label>Unit</label>
+<select id="runit"><option value="m">Minutes</option><option value="h">Hours</option><option value="d" selected>Days</option></select>
 </div>
+</div>
+<div class="row" style="margin-top:12px">
+<div style="flex:0 0 auto"><button onclick="relCalc(-1)">&#9664; Past</button></div>
+<div style="flex:0 0 auto"><button onclick="relCalc(1)" style="background:var(--accent)">Future &#9654;</button></div>
+</div>
+<div class="res" id="relr"><div class="lb">Result</div><div class="val" id="relv"></div></div>
+</div>
+
+<footer><p>AI Timestamp &mdash; Fast, free Unix timestamp tools</p></footer>
+</div>
+
 <script>
-const $ = id => document.getElementById(id);
-const TZS = [
-  ['America/New_York','New York','EST/EDT'],
-  ['America/Los_Angeles','Los Angeles','PST/PDT'],
-  ['America/Chicago','Chicago','CST/CDT'],
-  ['Europe/London','London','GMT/BST'],
-  ['Europe/Berlin','Berlin','CET/CEST'],
-  ['Europe/Moscow','Moscow','MSK'],
-  ['Asia/Dubai','Dubai','GST'],
-  ['Asia/Shanghai','Shanghai','CST'],
-  ['Asia/Tokyo','Tokyo','JST'],
-  ['Australia/Sydney','Sydney','AEST/AEDT']
+var TZS=[
+['UTC','UTC'],['EST','America/New_York'],['CST','America/Chicago'],['PST','America/Los_Angeles'],
+['JST','Asia/Tokyo'],['CET','Europe/Berlin'],['IST','Asia/Kolkata'],['AEST','Australia/Sydney'],
+['GMT','Europe/London'],['KST','Asia/Seoul'],['CST (CN)','Asia/Shanghai'],['SGT','Asia/Singapore']
 ];
 
-function updateClock(){
-  const now = new Date();
-  $('liveTs').textContent = Math.floor(now.getTime()/1000);
-  $('liveDt').textContent = now.toUTCString();
+function fmt(d,tz){
+try{return d.toLocaleString('en-US',{timeZone:tz,year:'numeric',month:'short',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false})}
+catch(e){return'Invalid'}
 }
 
-function updateTZ(){
-  const grid = $('tzGrid');
-  grid.innerHTML = '';
-  const now = new Date();
-  TZS.forEach(([tz, name, abbr]) => {
-    const opts = {timeZone:tz, hour:'2-digit', minute:'2-digit', second:'2-digit', hour12:false};
-    const dopts = {timeZone:tz, weekday:'short', month:'short', day:'numeric'};
-    const time = now.toLocaleTimeString('en-US', opts);
-    const date = now.toLocaleDateString('en-US', dopts);
-    const offset = new Intl.DateTimeFormat('en',{timeZone:tz,timeZoneName:'shortOffset'}).formatToParts(now).find(p=>p.type==='timeZoneName').value;
-    const div = document.createElement('div');
-    div.className = 'tz';
-    div.innerHTML = '<div class="n">'+name+' ('+abbr+')</div><div class="t">'+time+'</div><div class="d">'+date+'</div><div class="o">'+offset+'</div>';
-    grid.appendChild(div);
-  });
+function tick(){
+var now=new Date(),ts=Math.floor(now.getTime()/1000);
+document.getElementById('lts').textContent=ts;
+document.getElementById('ldt').textContent=now.toUTCString();
+}
+setInterval(tick,1000);tick();
+
+function t2d(){
+var v=document.getElementById('tsi').value.trim();
+if(!v){alert('Please enter a timestamp');return}
+var n=Number(v),d;
+if(v.length>12)d=new Date(n);else d=new Date(n*1000);
+if(isNaN(d.getTime())){alert('Invalid timestamp');return}
+var el=document.getElementById('t2dr'),vl=document.getElementById('t2dv');
+var lines='UTC: '+d.toUTCString()+'\nLocal: '+d.toLocaleString()+'\nISO: '+d.toISOString();
+vl.textContent=lines;
+el.classList.add('show');
 }
 
-function ts2date(){
-  const v = $('tsIn').value.trim();
-  if(!v){return}
-  const num = Number(v);
-  if(isNaN(num)){show('convRes','<div class="lb">Error</div><div class="v" style="color:var(--og)">Invalid timestamp</div>');return}
-  const ms = v.length > 12 ? num : num * 1000;
-  const d = new Date(ms);
-  if(isNaN(d.getTime())){show('convRes','<div class="lb">Error</div><div class="v" style="color:var(--og)">Invalid timestamp</div>');return}
-  let h = '<div class="lb">UTC</div><div class="v g">'+d.toUTCString()+'</div>';
-  h += '<div class="lb" style="margin-top:10px">Local</div><div class="v">'+d.toString()+'</div>';
-  h += '<div class="lb" style="margin-top:10px">ISO 8601</div><div class="v o">'+d.toISOString()+'</div>';
-  show('convRes', h);
+function d2t(){
+var v=document.getElementById('dti').value;
+if(!v){alert('Please select a date and time');return}
+var d=new Date(v),ts=Math.floor(d.getTime()/1000);
+var el=document.getElementById('d2tr'),vl=document.getElementById('d2tv');
+vl.textContent=ts+' (seconds)\n'+d.getTime()+' (milliseconds)';
+el.classList.add('show');
 }
 
-function date2ts(){
-  const v = $('dtIn').value;
-  if(!v){return}
-  const d = new Date(v);
-  if(isNaN(d.getTime())){show('convRes','<div class="lb">Error</div><div class="v" style="color:var(--og)">Invalid date</div>');return}
-  const ts = Math.floor(d.getTime()/1000);
-  let h = '<div class="lb">Unix Timestamp (seconds)</div><div class="v g">'+ts+'</div>';
-  h += '<div class="lb" style="margin-top:10px">Milliseconds</div><div class="v">'+d.getTime()+'</div>';
-  h += '<div class="lb" style="margin-top:10px">UTC</div><div class="v o">'+d.toUTCString()+'</div>';
-  show('convRes', h);
+function showTz(){
+var v=document.getElementById('tzi').value.trim();
+var d=v?new Date(v.length>12?Number(v):Number(v)*1000):new Date();
+if(isNaN(d.getTime())){alert('Invalid timestamp');return}
+var g=document.getElementById('tzg');g.innerHTML='';
+TZS.forEach(function(tz){
+var div=document.createElement('div');div.className='tzi';
+div.innerHTML='<span class="n">'+tz[0]+'</span><span class="t">'+fmt(d,tz[1])+'</span>';
+g.appendChild(div);
+});
+}
+showTz();
+
+function relCalc(dir){
+var amt=Number(document.getElementById('ramt').value)||0;
+var unit=document.getElementById('runit').value;
+var ms=amt*(unit==='d'?86400000:unit==='h'?3600000:60000)*dir;
+var now=new Date(),target=new Date(now.getTime()+ms);
+var ts=Math.floor(target.getTime()/1000);
+var label=dir>0?'from now':'ago';
+var el=document.getElementById('relr'),vl=document.getElementById('relv');
+vl.textContent=amt+' '+{d:'day(s)',h:'hour(s)',m:'minute(s)'}[unit]+' '+label+':\n'+'Timestamp: '+ts+'\nUTC: '+target.toUTCString()+'\nLocal: '+target.toLocaleString();
+el.classList.add('show');
 }
 
-function calcDiff(){
-  const v1 = $('d1').value, v2 = $('d2').value;
-  if(!v1||!v2){return}
-  const a = new Date(v1), b = new Date(v2);
-  const diff = Math.abs(b - a);
-  const days = Math.floor(diff/86400000);
-  const hrs = Math.floor((diff%86400000)/3600000);
-  const mins = Math.floor((diff%3600000)/60000);
-  const secs = Math.floor((diff%60000)/1000);
-  const totalH = (diff/3600000).toFixed(2);
-  const totalM = (diff/60000).toFixed(0);
-  const totalS = (diff/1000).toFixed(0);
-  let h = '<div class="lb">Difference</div><div class="v g">'+days+' days, '+hrs+' hours, '+mins+' minutes, '+secs+' seconds</div>';
-  h += '<div class="lb" style="margin-top:10px">Total</div><div class="v">'+totalH+' hours &bull; '+totalM+' minutes &bull; '+totalS+' seconds</div>';
-  h += '<div class="lb" style="margin-top:10px">Weeks</div><div class="v o">'+(days/7).toFixed(2)+' weeks</div>';
-  show('diffRes', h);
+function cc(id){
+var t=document.getElementById(id).textContent;
+navigator.clipboard.writeText(t).then(function(){
+var b=event.target;b.textContent='Copied!';setTimeout(function(){b.textContent='Copy'},1500);
+});
 }
 
-let cdInterval = null;
-function startCd(){
-  const name = $('cdName').value.trim() || 'Countdown';
-  const target = $('cdTarget').value;
-  if(!target){return}
-  const tgt = new Date(target).getTime();
-  if(cdInterval) clearInterval(cdInterval);
-  const area = $('cdArea');
-  area.innerHTML = '<div style="margin-top:14px;margin-bottom:6px;color:var(--ac2);font-weight:600">'+name+'</div><div class="cdg"><div class="cdu"><div class="num" id="cdD">0</div><div class="lbl">Days</div></div><div class="cdu"><div class="num" id="cdH">0</div><div class="lbl">Hours</div></div><div class="cdu"><div class="num" id="cdM">0</div><div class="lbl">Minutes</div></div><div class="cdu"><div class="num" id="cdS">0</div><div class="lbl">Seconds</div></div></div>';
-  function tick(){
-    const now = Date.now();
-    const diff = tgt - now;
-    if(diff <= 0){
-      $('cdD').textContent = $('cdH').textContent = $('cdM').textContent = $('cdS').textContent = '0';
-      $('cdD').parentElement.parentElement.insertAdjacentHTML('afterend','<div style="text-align:center;color:var(--gn);font-weight:600;margin-top:10px">🎉 Countdown complete!</div>');
-      clearInterval(cdInterval);
-      return;
-    }
-    $('cdD').textContent = Math.floor(diff/86400000);
-    $('cdH').textContent = Math.floor((diff%86400000)/3600000);
-    $('cdM').textContent = Math.floor((diff%3600000)/60000);
-    $('cdS').textContent = Math.floor((diff%60000)/1000);
-  }
-  tick();
-  cdInterval = setInterval(tick, 1000);
-}
-
-function show(id, html){
-  const el = $(id);
-  el.innerHTML = html;
-  el.classList.remove('on');
-  void el.offsetWidth;
-  el.classList.add('on');
-}
-
-updateClock();
-updateTZ();
-setInterval(updateClock, 1000);
-setInterval(updateTZ, 1000);
-
-$('tsIn').addEventListener('keydown', e => { if(e.key==='Enter') ts2date(); });
+document.getElementById('dti').value=new Date(Date.now()-new Date().getTimezoneOffset()*60000).toISOString().slice(0,19);
 </script>
 <script src="https://alwingulla.com/88/tag.min.js" data-zone="130747" async data-cfasync="false"></script>
 </body>
