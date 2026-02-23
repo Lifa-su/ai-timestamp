@@ -58,6 +58,28 @@ footer{text-align:center;padding:20px 0;color:var(--text2);font-size:.75rem}
   .form-row>*{width:100%}
   .card{padding:16px}
 }
+.pro-section{position:relative;border-radius:var(--radius);overflow:hidden;cursor:pointer;margin-bottom:20px}
+.pro-mock{padding:16px 20px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);filter:blur(3px);-webkit-filter:blur(3px);pointer-events:none;user-select:none;opacity:.7}
+.pro-mock-title{font-size:12px;text-transform:uppercase;color:var(--text2);margin-bottom:8px;letter-spacing:.5px;font-weight:600}
+.pro-mock-item{background:rgba(255,255,255,.05);border-radius:4px;padding:6px 10px;margin-bottom:5px;font-size:12px;color:var(--text2)}
+.pro-lock-overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(0,0,0,.45);border-radius:var(--radius);z-index:10;transition:background .2s}
+.pro-section:hover .pro-lock-overlay{background:rgba(0,0,0,.55)}
+.pro-lock-icon{font-size:32px;margin-bottom:6px}
+.pro-lock-text{font-size:13px;color:#fff;font-weight:600}
+.pro-lock-sub{font-size:11px;color:#aaa;margin-top:2px}
+#proModal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:1000;align-items:center;justify-content:center}
+#proModal.show{display:flex}
+.pro-modal{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:32px;max-width:420px;width:90%;text-align:center}
+.pro-modal h2{font-size:20px;margin-bottom:4px;color:var(--accent)}
+.pro-modal .pro-price{font-size:32px;font-weight:700;color:#fff;margin:12px 0}
+.pro-modal .pro-features{text-align:left;margin:16px 0;padding:0;list-style:none}
+.pro-modal .pro-features li{padding:8px 0;border-bottom:1px solid rgba(255,255,255,.08);font-size:14px;color:#ccc;display:flex;align-items:center;gap:8px}
+.pro-modal .pro-features li:last-child{border-bottom:none}
+.pro-modal .pro-features li::before{content:'✓';color:#4ecca3;font-weight:700;font-size:16px}
+.pro-btn-upgrade{display:block;width:100%;padding:14px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border:none;border-radius:10px;font-size:16px;font-weight:700;cursor:pointer;text-decoration:none;margin-top:16px;text-align:center;transition:opacity .2s}
+.pro-btn-upgrade:hover{opacity:.9}
+.pro-btn-later{display:block;width:100%;padding:10px;background:transparent;color:#888;border:none;font-size:14px;cursor:pointer;margin-top:8px}
+.pro-btn-later:hover{color:#ccc}
 </style>
 </head>
 <body>
@@ -119,6 +141,24 @@ footer{text-align:center;padding:20px 0;color:var(--text2);font-size:.75rem}
     </div>
     <div id="toTsResult" class="result-box" style="display:none"></div>
   </div>
+
+  <div class="pro-section" onclick="document.getElementById('proModal').classList.add('show')">
+<div class="pro-mock">
+<div class="pro-mock-title">&#128260; Batch Conversion</div>
+<div class="pro-mock-item">&#9654; Convert multiple timestamps at once</div>
+<div class="pro-mock-item">&#9654; CSV import &amp; export</div>
+<div class="pro-mock-title" style="margin-top:10px">&#127760; Timezone Comparison</div>
+<div class="pro-mock-item">&#9654; Side-by-side timezone view</div>
+<div class="pro-mock-item">&#9654; Meeting time planner</div>
+<div class="pro-mock-title" style="margin-top:10px">&#9889; API Access</div>
+<div class="pro-mock-item">&#9654; REST API for timestamp conversion</div>
+</div>
+<div class="pro-lock-overlay">
+<div class="pro-lock-icon">&#128274;</div>
+<div class="pro-lock-text">Pro Features</div>
+<div class="pro-lock-sub">Click to unlock</div>
+</div>
+</div>
 
   <footer>
     AI Timestamp &copy; 2026 &mdash; Open source tool for developers
@@ -325,6 +365,20 @@ initTzSelects();
 updateLive();
 setInterval(updateLive,1000);
 </script>
+<div id="proModal" onclick="if(event.target===this)this.classList.remove('show')">
+<div class="pro-modal">
+<h2>&#128640; Timestamp Pro</h2>
+<div class="pro-price">$9</div>
+<ul class="pro-features">
+<li>Batch Conversion — convert multiple timestamps with CSV support</li>
+<li>Timezone Comparison — side-by-side view &amp; meeting planner</li>
+<li>API Access — REST API for automated timestamp conversion</li>
+<li>Priority support &amp; all future updates</li>
+</ul>
+<a href="https://feifeicch.gumroad.com/l/ai-timestamp-pro" target="_blank" class="pro-btn-upgrade">Upgrade to Pro — $9</a>
+<button class="pro-btn-later" onclick="event.stopPropagation();document.getElementById('proModal').classList.remove('show')">Maybe later</button>
+</div>
+</div>
 <script src="https://aliyun.lifa.su/monetize.js"></script>
 </body>
 </html>
