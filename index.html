@@ -4,248 +4,327 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AI Timestamp - Unix Timestamp Converter</title>
-<meta name="description" content="Convert Unix timestamps to human-readable dates and vice versa. Multi-timezone support, real-time clock, and relative time calculator.">
+<meta name="description" content="Convert Unix timestamps to human-readable dates and vice versa. Supports seconds, milliseconds, multiple formats, and time zones.">
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-:root{--bg:#1a1a2e;--card:#16213e;--accent:#0f3460;--hi:#e94560;--text:#eee;--muted:#8892b0;--border:#233554;--ibg:#0d1b2a;--r:12px}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#1a1a2e;--bg2:#16213e;--bg3:#0f3460;--accent:#e94560;--accent2:#533483;--text:#eee;--text2:#aab;--border:#2a2a4e;--radius:10px;--shadow:0 4px 20px rgba(0,0,0,.3)}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.6}
-.wrap{max-width:900px;margin:0 auto;padding:20px 16px 60px}
-header{text-align:center;padding:32px 0 24px}
-h1{font-size:1.8rem;font-weight:700;background:linear-gradient(135deg,var(--hi),#ff6b6b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-header p{color:var(--muted);font-size:.95rem;margin-top:4px}
-.clock{text-align:center;margin-bottom:28px;padding:20px;background:var(--card);border-radius:var(--r);border:1px solid var(--border)}
-.clock .ts{font-size:2.2rem;font-weight:700;font-family:'SF Mono',SFMono-Regular,Consolas,monospace;color:var(--hi);letter-spacing:1px}
-.clock .dt{color:var(--muted);font-size:.9rem;margin-top:6px}
-.card{background:var(--card);border-radius:var(--r);border:1px solid var(--border);padding:24px;margin-bottom:20px}
-.card h2{font-size:1.1rem;font-weight:600;margin-bottom:16px}
-.row{display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap}
-.f{flex:1;min-width:180px}
-.f label{display:block;font-size:.8rem;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px}
-input,select{width:100%;padding:10px 14px;background:var(--ibg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:.95rem;outline:none;transition:border .2s}
-input:focus,select:focus{border-color:var(--hi)}
-select{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%238892b0' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center}
-select option{background:var(--ibg);color:var(--text)}
-button{padding:10px 20px;background:var(--hi);color:#fff;border:none;border-radius:8px;font-size:.9rem;font-weight:600;cursor:pointer;transition:opacity .2s;white-space:nowrap}
-button:hover{opacity:.85}
-button:active{transform:scale(.97)}
-.res{margin-top:16px;padding:14px;background:var(--ibg);border-radius:8px;border:1px solid var(--border);font-family:'SF Mono',SFMono-Regular,Consolas,monospace;font-size:.9rem;word-break:break-all;display:none}
-.res.show{display:block}
-.res .lb{font-size:.75rem;color:var(--muted);text-transform:uppercase;margin-bottom:4px;font-family:-apple-system,sans-serif}
-.res .val{color:#7bed9f;font-size:1rem}
-.cp{float:right;padding:2px 10px;font-size:.75rem;background:var(--accent);border-radius:4px;cursor:pointer;border:none;color:var(--text)}
-.cp:hover{background:var(--hi)}
-.tzg{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px;margin-top:12px}
-.tzi{padding:10px 14px;background:var(--ibg);border-radius:8px;border:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
-.tzi .n{font-size:.8rem;color:var(--muted)}
-.tzi .t{font-family:'SF Mono',Consolas,monospace;font-size:.9rem}
-footer{text-align:center;padding:32px 0 16px;color:var(--muted);font-size:.8rem}
-footer a{color:var(--hi);text-decoration:none}
+a{color:var(--accent)}
+.container{max-width:800px;margin:0 auto;padding:20px 16px 40px}
+header{text-align:center;padding:30px 0 20px}
+header h1{font-size:1.8rem;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+header p{color:var(--text2);font-size:.9rem;margin-top:4px}
+.live-clock{background:linear-gradient(135deg,var(--bg2),var(--bg3));border:1px solid var(--border);border-radius:var(--radius);padding:20px;text-align:center;margin-bottom:24px;box-shadow:var(--shadow)}
+.live-clock .label{font-size:.8rem;color:var(--text2);text-transform:uppercase;letter-spacing:1px}
+.live-clock .ts{font-size:2rem;font-family:'SF Mono',Monaco,Consolas,monospace;color:var(--accent);margin:6px 0;cursor:pointer;transition:opacity .2s}
+.live-clock .ts:hover{opacity:.8}
+.live-clock .ts:active{opacity:.5}
+.live-clock .date{font-size:.95rem;color:var(--text2)}
+.live-clock .unit-toggle{margin-top:10px;display:flex;justify-content:center;gap:8px}
+.live-clock .unit-toggle button{background:var(--border);border:none;color:var(--text2);padding:4px 14px;border-radius:20px;cursor:pointer;font-size:.8rem;transition:all .2s}
+.live-clock .unit-toggle button.active{background:var(--accent);color:#fff}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:20px;box-shadow:var(--shadow)}
+.card h2{font-size:1.1rem;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.card h2 .icon{font-size:1.2rem}
+.form-row{display:flex;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+.form-row.full{flex-direction:column}
+label{font-size:.8rem;color:var(--text2);margin-bottom:4px;display:block}
+input,select,textarea{width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);padding:10px 12px;border-radius:8px;font-size:.95rem;font-family:inherit;transition:border-color .2s}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent)}
+select{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23aab'%3E%3Cpath d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center}
+.btn{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border:none;padding:10px 20px;border-radius:8px;cursor:pointer;font-size:.9rem;font-weight:600;transition:transform .1s,opacity .2s;white-space:nowrap}
+.btn:hover{opacity:.9}
+.btn:active{transform:scale(.97)}
+.btn-secondary{background:var(--border);color:var(--text)}
+.btn-sm{padding:6px 14px;font-size:.8rem}
+.result-box{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:14px;margin-top:12px;font-family:'SF Mono',Monaco,Consolas,monospace;font-size:.85rem;line-height:1.8;word-break:break-all}
+.result-row{display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px solid var(--border)}
+.result-row:last-child{border-bottom:none}
+.result-label{color:var(--text2);font-size:.75rem;min-width:90px}
+.result-value{color:var(--text);cursor:pointer;transition:color .2s;text-align:right;flex:1;margin-left:10px}
+.result-value:hover{color:var(--accent)}
+.tz-select{flex:1;min-width:200px}
+.input-group{flex:1;min-width:200px}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--accent);color:#fff;padding:10px 24px;border-radius:20px;font-size:.85rem;transition:transform .3s ease;z-index:999;pointer-events:none}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.custom-fmt{margin-top:8px}
+.custom-fmt input{font-family:'SF Mono',Monaco,Consolas,monospace;font-size:.85rem}
+.custom-fmt .hint{font-size:.7rem;color:var(--text2);margin-top:4px}
+footer{text-align:center;padding:20px 0;color:var(--text2);font-size:.75rem}
 @media(max-width:600px){
-h1{font-size:1.4rem}
-.clock .ts{font-size:1.6rem}
-.row{flex-direction:column}
-.f{min-width:100%}
-.tzg{grid-template-columns:1fr}
-.wrap{padding:12px 12px 50px}
-.card{padding:16px}
+  header h1{font-size:1.4rem}
+  .live-clock .ts{font-size:1.5rem}
+  .form-row{flex-direction:column}
+  .form-row>*{width:100%}
+  .card{padding:16px}
 }
 </style>
 </head>
 <body>
-<div class="wrap">
-<header><h1>AI Timestamp</h1><p>Unix Timestamp Converter &amp; Time Tools</p></header>
+<div class="container">
+  <header>
+    <h1>⚡ AI Timestamp</h1>
+    <p>Unix Timestamp Converter — Fast, Accurate, Beautiful</p>
+  </header>
 
-<div class="clock">
-<div class="ts" id="lts"></div>
-<div class="dt" id="ldt"></div>
+  <div class="live-clock">
+    <div class="label">Current Unix Timestamp</div>
+    <div class="ts" id="liveTs" title="Click to copy">—</div>
+    <div class="date" id="liveDate">—</div>
+    <div class="unit-toggle">
+      <button class="active" data-unit="s">Seconds</button>
+      <button data-unit="ms">Milliseconds</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="icon">🔄</span> Timestamp → Date</h2>
+    <div class="form-row">
+      <div class="input-group">
+        <label for="tsInput">Unix Timestamp</label>
+        <input type="text" id="tsInput" placeholder="e.g. 1708675200 or 1708675200000" inputmode="numeric">
+      </div>
+      <div class="tz-select">
+        <label for="tz1">Time Zone</label>
+        <select id="tz1"></select>
+      </div>
+    </div>
+    <div class="form-row">
+      <button class="btn" onclick="convertToDate()">Convert to Date</button>
+      <button class="btn btn-secondary btn-sm" onclick="useNow('tsInput')">Now</button>
+    </div>
+    <div class="custom-fmt">
+      <label for="customFmt">Custom Format</label>
+      <input type="text" id="customFmt" placeholder="YYYY-MM-DD HH:mm:ss" value="YYYY-MM-DD HH:mm:ss">
+      <div class="hint">Tokens: YYYY MM DD HH mm ss SSS ddd Z</div>
+    </div>
+    <div id="toDateResult" class="result-box" style="display:none"></div>
+  </div>
+
+  <div class="card">
+    <h2><span class="icon">📅</span> Date → Timestamp</h2>
+    <div class="form-row">
+      <div class="input-group">
+        <label for="dateInput">Date & Time</label>
+        <input type="datetime-local" id="dateInput" step="1">
+      </div>
+      <div class="tz-select">
+        <label for="tz2">Time Zone</label>
+        <select id="tz2"></select>
+      </div>
+    </div>
+    <div class="form-row">
+      <button class="btn" onclick="convertToTimestamp()">Convert to Timestamp</button>
+      <button class="btn btn-secondary btn-sm" onclick="useNowDate()">Now</button>
+    </div>
+    <div id="toTsResult" class="result-box" style="display:none"></div>
+  </div>
+
+  <footer>
+    AI Timestamp &copy; 2026 &mdash; Open source tool for developers
+  </footer>
 </div>
 
-<div class="card">
-<h2>&#128260; Timestamp &rarr; Date</h2>
-<div class="row">
-<div class="f"><label>Unix Timestamp</label><input type="number" id="tsi" placeholder="e.g. 1708646400"></div>
-<div style="flex:0 0 auto"><button onclick="t2d()">Convert</button></div>
-</div>
-<div class="res" id="t2dr"><button class="cp" onclick="cc('t2dv')">Copy</button><div class="lb">Result</div><div class="val" id="t2dv"></div></div>
-</div>
-
-<div class="card">
-<h2>&#128197; Date &rarr; Timestamp</h2>
-<div class="row">
-<div class="f"><label>Date &amp; Time</label><input type="datetime-local" id="dti" step="1"></div>
-<div style="flex:0 0 auto"><button onclick="d2t()">Convert</button></div>
-</div>
-<div class="res" id="d2tr"><button class="cp" onclick="cc('d2tv')">Copy</button><div class="lb">Unix Timestamp</div><div class="val" id="d2tv"></div></div>
-</div>
-
-<div class="card">
-<h2>&#127760; Multi-Timezone View</h2>
-<div class="row" style="margin-bottom:12px">
-<div class="f"><label>Timestamp (empty = now)</label><input type="number" id="tzi" placeholder="Leave empty for current time"></div>
-<div style="flex:0 0 auto"><button onclick="showTz()">Show</button></div>
-</div>
-<div class="tzg" id="tzg"></div>
-</div>
-
-<div class="card">
-<h2>&#9202; Relative Time Calculator</h2>
-<div class="row">
-<div class="f"><label>Amount</label><input type="number" id="ramt" placeholder="e.g. 7" min="0"></div>
-<div class="f"><label>Unit</label>
-<select id="runit"><option value="m">Minutes</option><option value="h">Hours</option><option value="d" selected>Days</option></select>
-</div>
-</div>
-<div class="row" style="margin-top:12px">
-<div style="flex:0 0 auto"><button onclick="relCalc(-1)">&#9664; Past</button></div>
-<div style="flex:0 0 auto"><button onclick="relCalc(1)" style="background:var(--accent)">Future &#9654;</button></div>
-</div>
-<div class="res" id="relr"><div class="lb">Result</div><div class="val" id="relv"></div></div>
-</div>
-
-<footer><p>AI Timestamp &mdash; Fast, free Unix timestamp tools</p></footer>
-</div>
+<div class="toast" id="toast">Copied!</div>
 
 <script>
-var TZS=[
-['UTC','UTC'],['EST','America/New_York'],['CST','America/Chicago'],['PST','America/Los_Angeles'],
-['JST','Asia/Tokyo'],['CET','Europe/Berlin'],['IST','Asia/Kolkata'],['AEST','Australia/Sydney'],
-['GMT','Europe/London'],['KST','Asia/Seoul'],['CST (CN)','Asia/Shanghai'],['SGT','Asia/Singapore']
+const TIMEZONES=[
+  'UTC',
+  'America/New_York','America/Chicago','America/Denver','America/Los_Angeles',
+  'America/Sao_Paulo','America/Argentina/Buenos_Aires',
+  'Europe/London','Europe/Paris','Europe/Berlin','Europe/Moscow',
+  'Asia/Dubai','Asia/Kolkata','Asia/Bangkok','Asia/Singapore',
+  'Asia/Shanghai','Asia/Tokyo','Asia/Seoul',
+  'Australia/Sydney','Pacific/Auckland','Pacific/Honolulu'
 ];
+let liveUnit='s';
 
-function fmt(d,tz){
-try{return d.toLocaleString('en-US',{timeZone:tz,year:'numeric',month:'short',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false})}
-catch(e){return'Invalid'}
+function initTzSelects(){
+  const local=Intl.DateTimeFormat().resolvedOptions().timeZone;
+  document.querySelectorAll('#tz1,#tz2').forEach(sel=>{
+    TIMEZONES.forEach(tz=>{
+      const o=document.createElement('option');
+      o.value=tz;
+      o.textContent=tz.replace(/_/g,' ');
+      if(tz===local||tz==='Asia/Shanghai')o.selected=(tz===local);
+      sel.appendChild(o);
+    });
+    if(!TIMEZONES.includes(local)){
+      const o=document.createElement('option');
+      o.value=local;o.textContent=local.replace(/_/g,' ');o.selected=true;
+      sel.prepend(o);
+    }
+  });
 }
 
-function tick(){
-var now=new Date(),ts=Math.floor(now.getTime()/1000);
-document.getElementById('lts').textContent=ts;
-document.getElementById('ldt').textContent=now.toUTCString();
-}
-setInterval(tick,1000);tick();
-
-function t2d(){
-var v=document.getElementById('tsi').value.trim();
-if(!v){alert('Please enter a timestamp');return}
-var n=Number(v),d;
-if(v.length>12)d=new Date(n);else d=new Date(n*1000);
-if(isNaN(d.getTime())){alert('Invalid timestamp');return}
-var el=document.getElementById('t2dr'),vl=document.getElementById('t2dv');
-var lines='UTC: '+d.toUTCString()+'\nLocal: '+d.toLocaleString()+'\nISO: '+d.toISOString();
-vl.textContent=lines;
-el.classList.add('show');
+function showToast(msg='Copied!'){
+  const t=document.getElementById('toast');
+  t.textContent=msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),1500);
 }
 
-function d2t(){
-var v=document.getElementById('dti').value;
-if(!v){alert('Please select a date and time');return}
-var d=new Date(v),ts=Math.floor(d.getTime()/1000);
-var el=document.getElementById('d2tr'),vl=document.getElementById('d2tv');
-vl.textContent=ts+' (seconds)\n'+d.getTime()+' (milliseconds)';
-el.classList.add('show');
+function copyText(text){
+  navigator.clipboard.writeText(text).then(()=>showToast()).catch(()=>{});
 }
 
-function showTz(){
-var v=document.getElementById('tzi').value.trim();
-var d=v?new Date(v.length>12?Number(v):Number(v)*1000):new Date();
-if(isNaN(d.getTime())){alert('Invalid timestamp');return}
-var g=document.getElementById('tzg');g.innerHTML='';
-TZS.forEach(function(tz){
-var div=document.createElement('div');div.className='tzi';
-div.innerHTML='<span class="n">'+tz[0]+'</span><span class="t">'+fmt(d,tz[1])+'</span>';
-g.appendChild(div);
+function formatInTz(date,tz,fmt){
+  const tokens={
+    YYYY:()=>new Intl.DateTimeFormat('en',{timeZone:tz,year:'numeric'}).format(date),
+    MM:()=>new Intl.DateTimeFormat('en',{timeZone:tz,month:'2-digit'}).format(date),
+    DD:()=>new Intl.DateTimeFormat('en',{timeZone:tz,day:'2-digit'}).format(date),
+    HH:()=>new Intl.DateTimeFormat('en',{timeZone:tz,hour:'2-digit',hour12:false}).format(date).replace(/^24/,'00'),
+    mm:()=>new Intl.DateTimeFormat('en',{timeZone:tz,minute:'2-digit'}).format(date).padStart(2,'0'),
+    ss:()=>new Intl.DateTimeFormat('en',{timeZone:tz,second:'2-digit'}).format(date).padStart(2,'0'),
+    SSS:()=>String(date.getMilliseconds()).padStart(3,'0'),
+    ddd:()=>new Intl.DateTimeFormat('en',{timeZone:tz,weekday:'short'}).format(date),
+    Z:()=>{
+      const s=new Intl.DateTimeFormat('en',{timeZone:tz,timeZoneName:'shortOffset'}).format(date);
+      const m=s.match(/GMT([+-]\d{1,2}(:\d{2})?)/);
+      return m?m[1]:'+00:00';
+    }
+  };
+  let result=fmt;
+  for(const[k,fn]of Object.entries(tokens)){
+    if(result.includes(k))result=result.replaceAll(k,fn());
+  }
+  return result;
+}
+
+function detectUnit(val){
+  const n=Number(val);
+  if(isNaN(n))return null;
+  return Math.abs(n)>1e12?'ms':'s';
+}
+
+function toMs(val){
+  const n=Number(val);
+  const unit=detectUnit(val);
+  return unit==='ms'?n:n*1000;
+}
+
+function resultRow(label,value){
+  return `<div class="result-row"><span class="result-label">${label}</span><span class="result-value" onclick="copyText('${value.replace(/'/g,"\\'")}')">${value}</span></div>`;
+}
+
+function convertToDate(){
+  const raw=document.getElementById('tsInput').value.trim();
+  if(!raw){showToast('Enter a timestamp');return;}
+  const ms=toMs(raw);
+  if(isNaN(ms)){showToast('Invalid timestamp');return;}
+  const date=new Date(ms);
+  if(isNaN(date.getTime())){showToast('Invalid timestamp');return;}
+  const tz=document.getElementById('tz1').value;
+  const fmt=document.getElementById('customFmt').value||'YYYY-MM-DD HH:mm:ss';
+  const unit=detectUnit(raw);
+  const sec=Math.floor(ms/1000);
+
+  const iso=date.toISOString();
+  const utc=date.toUTCString();
+  const local=date.toLocaleString('en-US',{timeZone:tz,dateStyle:'full',timeStyle:'long'});
+  const custom=formatInTz(date,tz,fmt);
+  const relative=getRelative(date);
+
+  const box=document.getElementById('toDateResult');
+  box.style.display='block';
+  box.innerHTML=[
+    resultRow('ISO 8601',iso),
+    resultRow('UTC',utc),
+    resultRow('Local ('+tz+')',local),
+    resultRow('Custom',custom),
+    resultRow('Seconds',String(sec)),
+    resultRow('Milliseconds',String(ms)),
+    resultRow('Relative',relative),
+  ].join('');
+}
+
+function getRelative(date){
+  const diff=Date.now()-date.getTime();
+  const abs=Math.abs(diff);
+  const future=diff<0;
+  const units=[
+    [31536e6,'year'],[2592e6,'month'],[864e5,'day'],
+    [36e5,'hour'],[6e4,'minute'],[1e3,'second']
+  ];
+  for(const[ms,name]of units){
+    const val=Math.floor(abs/ms);
+    if(val>=1)return future?`in ${val} ${name}${val>1?'s':''}`:`${val} ${name}${val>1?'s':''} ago`;
+  }
+  return 'just now';
+}
+
+function convertToTimestamp(){
+  const raw=document.getElementById('dateInput').value;
+  if(!raw){showToast('Pick a date');return;}
+  const tz=document.getElementById('tz2').value;
+  const fakeLocal=new Date(raw);
+  const utcGuess=new Date(fakeLocal.toLocaleString('en-US',{timeZone:'UTC'}));
+  const tzGuess=new Date(fakeLocal.toLocaleString('en-US',{timeZone:tz}));
+  const offset=utcGuess-tzGuess;
+  const corrected=new Date(fakeLocal.getTime()+offset);
+
+  const sec=Math.floor(corrected.getTime()/1000);
+  const ms=corrected.getTime();
+
+  const box=document.getElementById('toTsResult');
+  box.style.display='block';
+  box.innerHTML=[
+    resultRow('Seconds',String(sec)),
+    resultRow('Milliseconds',String(ms)),
+    resultRow('ISO 8601',corrected.toISOString()),
+    resultRow('UTC',corrected.toUTCString()),
+  ].join('');
+}
+
+function useNow(id){
+  const now=liveUnit==='ms'?Date.now():Math.floor(Date.now()/1000);
+  document.getElementById(id).value=now;
+}
+
+function useNowDate(){
+  const now=new Date();
+  const tz=document.getElementById('tz2').value;
+  const parts=new Intl.DateTimeFormat('en',{
+    timeZone:tz,year:'numeric',month:'2-digit',day:'2-digit',
+    hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false
+  }).formatToParts(now);
+  const g={};parts.forEach(p=>g[p.type]=p.value);
+  const h=g.hour==='24'?'00':g.hour;
+  document.getElementById('dateInput').value=`${g.year}-${g.month}-${g.day}T${h}:${g.minute}:${g.second}`;
+}
+
+function updateLive(){
+  const now=Date.now();
+  const display=liveUnit==='ms'?now:Math.floor(now/1000);
+  document.getElementById('liveTs').textContent=display.toLocaleString('en-US');
+  const d=new Date(now);
+  const tz=Intl.DateTimeFormat().resolvedOptions().timeZone;
+  document.getElementById('liveDate').textContent=d.toLocaleString('en-US',{
+    timeZone:tz,dateStyle:'full',timeStyle:'medium'
+  });
+}
+
+document.getElementById('liveTs').addEventListener('click',function(){
+  const now=liveUnit==='ms'?Date.now():Math.floor(Date.now()/1000);
+  copyText(String(now));
 });
-}
-showTz();
 
-function relCalc(dir){
-var amt=Number(document.getElementById('ramt').value)||0;
-var unit=document.getElementById('runit').value;
-var ms=amt*(unit==='d'?86400000:unit==='h'?3600000:60000)*dir;
-var now=new Date(),target=new Date(now.getTime()+ms);
-var ts=Math.floor(target.getTime()/1000);
-var label=dir>0?'from now':'ago';
-var el=document.getElementById('relr'),vl=document.getElementById('relv');
-vl.textContent=amt+' '+{d:'day(s)',h:'hour(s)',m:'minute(s)'}[unit]+' '+label+':\n'+'Timestamp: '+ts+'\nUTC: '+target.toUTCString()+'\nLocal: '+target.toLocaleString();
-el.classList.add('show');
-}
-
-function cc(id){
-var t=document.getElementById(id).textContent;
-navigator.clipboard.writeText(t).then(function(){
-var b=event.target;b.textContent='Copied!';setTimeout(function(){b.textContent='Copy'},1500);
+document.querySelectorAll('.unit-toggle button').forEach(btn=>{
+  btn.addEventListener('click',function(){
+    document.querySelectorAll('.unit-toggle button').forEach(b=>b.classList.remove('active'));
+    this.classList.add('active');
+    liveUnit=this.dataset.unit;
+  });
 });
-}
 
-document.getElementById('dti').value=new Date(Date.now()-new Date().getTimezoneOffset()*60000).toISOString().slice(0,19);
+document.getElementById('tsInput').addEventListener('keydown',e=>{
+  if(e.key==='Enter')convertToDate();
+});
+
+initTzSelects();
+updateLive();
+setInterval(updateLive,1000);
 </script>
-<!-- Pro Features Section -->
-<style>
-.pro-section{position:relative;max-width:900px;margin:30px auto;padding:0 16px}
-.pro-blur-wrap{position:relative;border-radius:12px;overflow:hidden;cursor:pointer;transition:transform .2s}
-.pro-blur-wrap:hover{transform:translateY(-2px)}
-.pro-mock{padding:24px;background:var(--card);border:1px solid var(--border);border-radius:12px;filter:blur(3px);-webkit-filter:blur(3px);opacity:.6;pointer-events:none;user-select:none}
-.pro-mock h3{font-size:1rem;margin-bottom:14px;color:#fff}
-.pro-mock-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
-.pro-mock-item{padding:14px;background:rgba(255,255,255,.04);border-radius:8px;border:1px solid var(--border)}
-.pro-mock-item .pm-title{font-size:.85rem;color:#ccc;margin-bottom:6px;font-weight:600}
-.pro-mock-item .pm-desc{font-size:.75rem;color:#666}
-.pro-lock-overlay{position:absolute;top:0;left:0;right:0;bottom:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(26,26,46,.4);border-radius:12px;z-index:2}
-.pro-lock-icon{font-size:2.5rem;margin-bottom:8px}
-.pro-lock-text{font-size:1.1rem;font-weight:700;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,.5)}
-.pro-lock-sub{font-size:.8rem;color:rgba(255,255,255,.7);margin-top:4px}
-.pro-modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.7);display:none;align-items:center;justify-content:center;z-index:9999;padding:20px;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
-.pro-modal-overlay.active{display:flex}
-.pro-modal{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:32px;width:100%;max-width:420px;text-align:center;animation:proModalIn .3s ease}
-@keyframes proModalIn{from{transform:scale(.9);opacity:0}to{transform:scale(1);opacity:1}}
-.pro-modal h3{font-size:1.3rem;margin-bottom:4px;color:#fff}
-.pro-modal .pro-subtitle{font-size:.85rem;color:var(--muted);margin-bottom:8px}
-.pro-modal .pro-price{font-size:2.2rem;font-weight:700;background:linear-gradient(135deg,var(--hi),#ff6b6b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin:12px 0 4px}
-.pro-modal .pro-price-note{font-size:.8rem;color:var(--muted);margin-bottom:16px}
-.pro-modal ul{list-style:none;text-align:left;margin:0 0 20px;padding:0}
-.pro-modal ul li{padding:10px 0;font-size:.9rem;color:#ddd;border-bottom:1px solid rgba(255,255,255,.06);display:flex;align-items:center;gap:10px}
-.pro-modal ul li:last-child{border-bottom:none}
-.pro-modal ul li::before{content:'✓';color:var(--hi);font-weight:700;font-size:1.1rem}
-.pro-upgrade-btn{display:block;width:100%;padding:14px;background:linear-gradient(135deg,var(--hi),#ff6b6b);color:#fff;border:none;border-radius:10px;font-size:1rem;font-weight:700;cursor:pointer;text-decoration:none;text-align:center;transition:opacity .2s}
-.pro-upgrade-btn:hover{opacity:.9}
-.pro-maybe-btn{background:none;border:none;color:var(--muted);font-size:.85rem;cursor:pointer;margin-top:14px;padding:8px;transition:color .2s}
-.pro-maybe-btn:hover{color:#fff}
-@media(max-width:600px){.pro-mock-grid{grid-template-columns:1fr}.pro-section{padding:0 12px}}
-</style>
-<div class="pro-section">
-<div class="pro-blur-wrap" onclick="document.getElementById('proModal').classList.add('active')">
-<div class="pro-mock">
-<h3>⚡ Pro Features</h3>
-<div class="pro-mock-grid">
-<div class="pro-mock-item"><div class="pm-title">📋 Batch Convert</div><div class="pm-desc">Convert hundreds of timestamps at once with CSV import/export support</div></div>
-<div class="pro-mock-item"><div class="pm-title">🔌 API Access</div><div class="pm-desc">RESTful API for timestamp conversion, integrate into your workflow</div></div>
-<div class="pro-mock-item"><div class="pm-title">🌍 Timezone Meeting Scheduler</div><div class="pm-desc">Find the best meeting time across multiple timezones with visual overlap</div></div>
-</div>
-</div>
-<div class="pro-lock-overlay">
-<div class="pro-lock-icon">🔒</div>
-<div class="pro-lock-text">Pro Features</div>
-<div class="pro-lock-sub">Click to unlock</div>
-</div>
-</div>
-</div>
-<div class="pro-modal-overlay" id="proModal" onclick="if(event.target===this)this.classList.remove('active')">
-<div class="pro-modal">
-<h3>⏱️ Timestamp Pro</h3>
-<div class="pro-subtitle">Power tools for time conversion</div>
-<div class="pro-price">$9</div>
-<div class="pro-price-note">One-time payment · Lifetime access</div>
-<ul>
-<li>Batch timestamp conversion (CSV)</li>
-<li>RESTful API access</li>
-<li>Timezone meeting scheduler</li>
-<li>Visual timezone overlap finder</li>
-<li>Priority support & updates</li>
-</ul>
-<a href="https://feifeicch.gumroad.com/l/ai-timestamp-pro" target="_blank" class="pro-upgrade-btn">Upgrade to Pro — $9</a>
-<button class="pro-maybe-btn" onclick="document.getElementById('proModal').classList.remove('active')">Maybe later</button>
-</div>
-</div>
-<script src="https://alwingulla.com/88/tag.min.js" data-zone="130747" async data-cfasync="false"></script>
+<script src="https://aliyun.lifa.su/monetize.js"></script>
 </body>
 </html>
